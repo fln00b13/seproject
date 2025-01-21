@@ -22,4 +22,4 @@ jobs:
     steps:
       - name: Deploy to AWS EC2
         run: |
-          ssh -i your-key.pem ec2-user@your-ec2-ip 'docker-compose up -d'
+          ssh -i DevOpsLabKey.pem ec2-user@52.77.239.148 'docker-compose up -d'
