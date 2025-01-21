@@ -15,6 +15,10 @@ jobs:
         echo "${{ secrets.SSH_KEY }}" > DevOpsLabKey.pem
         chmod 600 DevOpsLabKey.pem
 
+    - name: Add remote server to known hosts
+      run: |
+        ssh-keyscan -H 52.77.239.148 >> ~/.ssh/known_hosts
+
     - name: Deploy to server
       run: ssh -i DevOpsLabKey.pem ec2-user@52.77.239.148 'docker-compose up -d'
       env:
