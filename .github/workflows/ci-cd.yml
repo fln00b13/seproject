@@ -17,7 +17,9 @@ jobs:
 
     - name: Add remote server to known hosts
       run: |
+        mkdir -p ~/.ssh
         ssh-keyscan -H 52.77.239.148 >> ~/.ssh/known_hosts
+        cat ~/.ssh/known_hosts
 
     - name: Deploy to server
       run: ssh -i DevOpsLabKey.pem ec2-user@52.77.239.148 'docker-compose up -d'
