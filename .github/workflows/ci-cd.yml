@@ -22,7 +22,7 @@ jobs:
 
     - name: Transfer docker-compose.yml to EC2 instance
       run: |
-        scp -i DevOpsLabKey.pem seproject/docker-compose.yml ec2-user@52.77.239.148:/home/ec2-user/ 
+        scp -i DevOpsLabKey.pem se_project/seproject/docker-compose.yml ec2-user@52.77.239.148:/home/ec2-user/
 
     - name: Deploy to server
       run: |
