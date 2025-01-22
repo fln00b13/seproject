@@ -26,4 +26,4 @@ jobs:
 
     - name: Deploy to server
       run: |
-        ssh -i DevOpsLabKey.pem ec2-user@52.77.239.148 'cd /home/ec2-user && docker-compose up -d'
+        ssh -i DevOpsLabKey.pem ec2-user@52.77.239.148 'cd /home/ec2-user/seproject && docker-compose up -d'
