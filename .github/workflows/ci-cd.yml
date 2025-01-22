@@ -19,9 +19,14 @@ jobs:
       run: |
         mkdir -p ~/.ssh
         ssh-keyscan -H 52.77.239.148 >> ~/.ssh/known_hosts
-        cat ~/.ssh/known_hosts
+
+    - name: Transfer docker-compose.yml to EC2 instance
+      run: |
+        scp -i DevOpsLabKey.pem seproject/docker-compose.yml ec2-user@52.77.239.148:/home/ec2-user/ 
 
     - name: Deploy to server
-      run: ssh -i DevOpsLabKey.pem ec2-user@52.77.239.148 'docker-compose up -d'
-      env:
-        SSH_KEY: ${{ secrets.SSH_KEY }}
+      run: |
+        ssh -i DevOpsLabKey.pem ec2-user@52.77.239.148 << EOF
+        cd /home/ec2-user
+        docker-compose up -d
+        EOF
