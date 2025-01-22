@@ -1,31 +1,33 @@
-name: CI/CD Pipeline
+name: Build and Deploy
 
 on:
   push:
     branches:
-      - main  # Trigger bila ada push ke branch `main`
-  pull_request:
-    branches:
-      - main  # Trigger bila ada pull request ke branch `main`
+      - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Install SSH Client
-        run: sudo apt-get update && sudo apt-get install -y openssh-client
+    - name: Add SSH Key
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
 
-      - name: Copy Docker Compose File to EC2
-        run: |
-          scp -i DevOpsLabKey.pem docker-compose.yml ec2-user@52.77.239.148:/home/ec2-user/seproject/
+    - name: Verify SSH Connection
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@52.77.239.148 "echo 'Connected!'"
 
-      - name: Deploy Application
-        run: |
-          ssh -i DevOpsLabKey.pem ec2-user@52.77.239.148 "
+    - name: Deploy with Docker Compose
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@52.77.239.148 "
           cd /home/ec2-user/seproject &&
+          docker-compose down &&
           docker-compose up -d
-          "
+        "
+
