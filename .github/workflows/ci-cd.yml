@@ -22,8 +22,8 @@ jobs:
 
     - name: Debugging: List files on EC2
       run: |
-        ssh -i DevOpsLabKey.pem ec2-user@52.77.239.148 'ls -l /home/ec2-user'
+        ssh -i DevOpsLabKey.pem ec2-user@52.77.239.148 'ls -l /home/ec2-user/seproject'
 
     - name: Deploy to server
       run: |
-        ssh -i DevOpsLabKey.pem ec2-user@52.77.239.148 'cd /home/ec2-user/seproject && docker-compose up -d'
+        ssh -i DevOpsLabKey.pem ec2-user@52.77.239.148 'docker-compose -f /home/ec2-user/seproject/docker-compose.yml up -d'
