@@ -1,29 +1,20 @@
-name: CI/CD Pipeline
-
-on: [push]
-
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: Set up SSH
-      run: |
-        echo "${{ secrets.SSH_KEY }}" > DevOpsLabKey.pem
-        chmod 600 DevOpsLabKey.pem
+      - name: Install SSH Client
+        run: sudo apt-get update && sudo apt-get install -y openssh-client
 
-    - name: Add remote server to known hosts
-      run: |
-        mkdir -p ~/.ssh
-        ssh-keyscan -H 52.77.239.148 >> ~/.ssh/known_hosts
+      - name: Copy Docker Compose File to EC2
+        run: |
+          scp -i DevOpsLabKey.pem docker-compose.yml ec2-user@52.77.239.148:/home/ec2-user/seproject/
 
-    - name: Debugging: List files on EC2
-      run: |
-        ssh -i DevOpsLabKey.pem ec2-user@52.77.239.148 'ls -l /home/ec2-user/seproject'
-
-    - name: Deploy to server
-      run: |
-        ssh -i DevOpsLabKey.pem ec2-user@52.77.239.148 'docker-compose -f /home/ec2-user/seproject/docker-compose.yml up -d'
+      - name: Deploy Application
+        run: |
+          ssh -i DevOpsLabKey.pem ec2-user@52.77.239.148 "
+          cd /home/ec2-user/seproject &&
+          docker-compose up -d
+          "
